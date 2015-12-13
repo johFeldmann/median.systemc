@@ -11,7 +11,9 @@
 // Needed for the simple_target_socket
 #define SC_INCLUDE_DYNAMIC_PROCESSES
 
-#include "median_top.h"
+// #include "median_top.h"
+#include "median_module.h"
+#include "memory.h"
 #include "median_tb.h"
 
 using namespace std;
@@ -29,13 +31,17 @@ int sc_main(int argc, char* argv[])
   TB1.finish(FinishSig);
   TB1.clk(TestClk); // Module Input Clock
 
-  median_top DUT("DUT_MedianFilter");
+  median_module DUT("DUT_MedianFilter");
   DUT.clk(TestClk);
   DUT.start(StartSig);
   DUT.finish(FinishSig);
 
+  Memory DUT_MEM("DUT_ImgMem");
+  // bind median-filter initiator to memory interface
+  DUT.socket.bind( DUT_MEM.socket );
+
   // bind testbench initiator to median target
-  TB1.mem_if.bind( DUT.socket_debug );
+  TB1.mem_if.bind( DUT_MEM.socket_dbg );
 
   sc_start();  // run forever
 
