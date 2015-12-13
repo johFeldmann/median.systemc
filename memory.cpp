@@ -49,12 +49,13 @@ void Memory::do_memory()
 {
   // Register callback for incoming b_transport interface method call
   socket.register_b_transport(this, &Memory::b_transport);
+  socket_dbg.register_transport_dbg(this, &Memory::transport_dbg);
 
   // initialize memory with image contents
   unsigned char tmp;
   for (unsigned int i = 0; i < width; i++)
     for (unsigned int j = 0; j < height; j++)
-      mem[i*width+j] = IMAGE[i][j];
+      mem[i*height+j] = IMAGE[i][j];
 }
 
 // TLM-2 blocking transport method
@@ -78,12 +79,12 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
   // Obliged to implement read and write commands
   if ( cmd == tlm::TLM_READ_COMMAND )
   {
-    cout << "Mem: Reading Cell " << +(unsigned int)adr << ": " << +(unsigned char)mem[adr] << "\n";
+    // cout << "Mem: Reading Cell " << +(unsigned int)adr << ": " << +(unsigned char)mem[adr] << "\n";
     memcpy(ptr, &mem[adr], len);
   }
   else if ( cmd == tlm::TLM_WRITE_COMMAND )
   {
-    cout << "Mem: Writing Cell " << +(unsigned int)adr << ": " << +(unsigned char)(*ptr) << "\n";
+    // cout << "Mem: Writing Cell " << +(unsigned int)adr << ": " << +(unsigned char)(*ptr) << "\n";
     memcpy(&mem[adr], ptr, len);
   }
 
@@ -94,16 +95,16 @@ void Memory::b_transport( tlm::tlm_generic_payload& trans, sc_time& delay )
 unsigned int Memory::transport_dbg(tlm::tlm_generic_payload& trans)
 {
   tlm::tlm_command cmd = trans.get_command();
-  sc_dt::uint64    adr = trans.get_address() / 4;
+  sc_dt::uint64    adr = trans.get_address();
   unsigned char*   ptr = trans.get_data_ptr();
   unsigned int     len = trans.get_data_length();
 
   // Calculate the number of bytes to be actually copied
-  unsigned int num_bytes = (len < ( (width*height) - adr ) * 4) ? len : (SIZE - adr) * 4;
+  unsigned int num_bytes = (len < (width*height) - adr ) ? len : (SIZE - adr);
 
   if ( cmd == tlm::TLM_READ_COMMAND )
   {
-    cout << "Mem: Reading Cell " << +(unsigned int)adr << ": " << +(unsigned char)mem[adr] << "\n";
+    // cout << "Mem(dbg): Reading Cell " << +(unsigned int)adr << ": " << +(unsigned char)mem[adr] << "\n";
     memcpy(ptr, &mem[adr], num_bytes);
   }
   else if ( cmd == tlm::TLM_WRITE_COMMAND )

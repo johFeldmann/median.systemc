@@ -32,7 +32,7 @@ void Median_tb::do_median_tb()
   // wait for module to finish
   while(finish.read() != true)
   {
-    cout << "Waiting for finish \n";
+    // cout << "Waiting for finish \n";
     wait();
   }
 
@@ -45,19 +45,21 @@ void Median_tb::do_median_tb()
   // read reference image
   BMP image_ref;
   image_ref.ReadFromFile("output_image_reference.bmp");
+  // image_ref.ReadFromFile("input_image.bmp");
 
   // compare result with reference image
   for (unsigned int i = 1; i < width-1; ++i)
     for(unsigned int j = 1; j < height-1; j++)
     {
-      cout << "Checking Pixel (" << i << ", " << j << "): " << (int)img[i][j] << " / " << (int)image_ref.GetPixel(i, j).Red << "\n";
+      // cout << "Checking Pixel (" << (int)i << ", " << (int)j << "): "
+      //     << (int)img[i][j] << " / " << (int)image_ref.GetPixel(i, j).Red << "\n";
       if(img[i][j] == 0)
         SC_REPORT_WARNING("Image Check", "Pixel Value is 0");
       if( ( img[i][j] != image_ref.GetPixel(i, j).Red ) ||
           ( img[i][j] != image_ref.GetPixel(i, j).Blue ) || 
           ( img[i][j] != image_ref.GetPixel(i, j).Green )
         )
-        SC_REPORT_ERROR("Image Check", "a Pixel is wrong");
+        SC_REPORT_ERROR("Image Check", "a Pixel is wrong\n");
     }
 
   // write result image
@@ -95,11 +97,11 @@ void Median_tb::read_image_uut(unsigned char img[][height])
     for (unsigned int j = 0; j < height; ++j)
     {
       // set transmission parameters
-      trans->set_address(i * width + j);  // address set to positon of pixel column
-      trans->set_data_ptr( &(img[i][j]) );  // copy directly into img array
+      trans->set_address(i * height + j);  // address set to positon of pixel column
+      trans->set_data_ptr( &(img[j][i]) );  // copy directly into img array, switched coords
 
       len = mem_if->transport_dbg(*trans);
-      cout << "Reading Pixel (" << i << ", " << j << "): " << (int)img[i][j] << "\n";
+      // cout << "Reading Pixel (" << i << ", " << j << "): " << (int)img[i][j] << "\n";
     }
   }
 }

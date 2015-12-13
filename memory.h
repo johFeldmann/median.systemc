@@ -52,6 +52,7 @@ SC_MODULE(Memory)
 {
   // TLM-2 socket, defaults to 32-bits wide, base protocol
   tlm_utils::simple_target_socket<Memory> socket;
+  tlm_utils::simple_target_socket<Memory> socket_dbg;
 
   // Image Dimensions
   static const unsigned int width  = 100;
@@ -68,7 +69,7 @@ SC_MODULE(Memory)
   enum { SIZE = (width * height) };
 
   SC_CTOR(Memory)
-  : socket("socket")
+  : socket("socket"), socket_dbg("socket_tb")
   {
   	do_memory();
   }
