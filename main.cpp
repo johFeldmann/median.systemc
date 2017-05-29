@@ -33,7 +33,6 @@ int sc_main(int argc, char* argv[])
 
   median_module DUT("DUT_MedianFilter");
   DUT.clk(TestClk);
-  DUT.start(StartSig);
   DUT.finish(FinishSig);
 
   Memory DUT_MEM("DUT_ImgMem");

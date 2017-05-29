@@ -23,6 +23,11 @@
 // Module implementing Median Filter
 SC_MODULE(median_module)
 {
+  sc_in<bool> clk;
+
+  // Module Interface
+  sc_out<bool>  finish;  // indicates that operation is finished
+
   // Interface to Image Memory
   tlm_utils::simple_initiator_socket<median_module> socket;
 
@@ -31,6 +36,10 @@ SC_MODULE(median_module)
   static const unsigned int height = 100;
 
   void do_median(); // main function of median filter
+
+  // helper function for sorting
+  void CompareExchange(uint8_t* data);
+  void Sort(uint8_t* data);
 
   // helper functions for reading/writing from/to memory (this is only a hint, you are free to remove these)
   unsigned char read_pixel(unsigned int x, unsigned int y);

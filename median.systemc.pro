@@ -15,7 +15,7 @@ CONFIG -= qt
 
 SOURCES += main.cpp
 SOURCES += median_tb.cpp
-SOURCES += median_top.cpp
+#SOURCES += median_top.cpp
 SOURCES += median_module.cpp
 SOURCES += memory.cpp
 SOURCES += EasyBMP/EasyBMP.cpp
