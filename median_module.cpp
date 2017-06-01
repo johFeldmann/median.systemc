@@ -36,7 +36,7 @@ void median_module::do_median()
             Sort(&pixel[0][0]);
 
             // Write back buffer
-            write_pixel(pixel[1][1], i+1, j+1);
+//            write_pixel(pixel[1][1], i+1, j+1);
 
             // Write to buffer
             buffer[i][j] = pixel[1][1];
